@@ -4,3 +4,49 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
+function hello_block_info() {
+  $blocks = array(); // declaring an associative array called $blocks
+  
+  $blocks['hello_world'] = array(
+    'info' => t('Hello World Block'),//info key points to string w/ admin name of block
+  );
+  
+  $blocks['hello_user'] = array (
+    'info' => t('Hello User Block'),//t function enables text string to be seem in user interfac
+  );                          //you wrap your string in a t function
+  
+  return $blocks;
+}
+
+function hello_block_view($delta = '') {
+  $block = array();
+  
+  switch ($delta) {
+    case 'hello_world':
+      $block['subject'] = t('Hello World!!!');
+      $block['content'] = t('This is the hello world block.');      
+      break;
+    
+    case 'hello_user':
+      $block['subject'] = t('Hello World');
+      
+      $hour = date('G');//php function to get 24 hr hour
+      $greeting = '';
+      if ($hour < 12) {
+          $greeting = 'Good morning @name!';
+      }
+      elseif ($hour < 18) {
+        $greeting = 'Good afternoon @name!';
+      }
+      else {
+          $greeting = 'Good evening @name!';
+      }
+      
+      $block['content'] = t($greeting, array('@name' => $GLOBALS['user']->name)); //uses global variables (?)   
+      
+      break;
+  }
+  
+  return $block;
+  }
