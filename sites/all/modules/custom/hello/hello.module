@@ -16,6 +16,10 @@ function hello_block_info() {
     'info' => t('Hello User Block'),//t function enables text string to be seem in user interfac
   );                          //you wrap your string in a t function
   
+  $blocks['user_info'] = array (
+    'info' => t('User Info Block'),
+  );
+  
   return $blocks;
 }
 
@@ -46,7 +50,27 @@ function hello_block_view($delta = '') {
       $block['content'] = t($greeting, array('@name' => $GLOBALS['user']->name)); //uses global variables (?)   
       
       break;
+      
+    case 'user_info':
+     
+      if (arg(0) == 'user' && is_numeric(arg(1))) {
+        $account = user_load(arg(1));
+        if (!empty($account)) {
+          $block['subject'] = t('User Info');
+          $output = '';
+          $output .= '<div><label>' .t('Name') . '</label>' . $account->name . '</div>';
+          $output .= '<div><label>' .t('Email') . '</label>' . $account->mail . '</div>';
+          $output .= '<div><label>' .t('Created') . '</label>' . format_date($account->created) . '</div>';
+          $access = ($account->access == 0) ? t('Never') : format_date($account->access);
+          $output .= '<div><label>' .t('Last Access') . '</label>' . $access . '</div>';
+
+          $block['content'] = $output;
+        }
+       
+      }
+      break;
   }
   
   return $block;
-  }
+  
+}
